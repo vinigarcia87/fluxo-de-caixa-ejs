@@ -1,12 +1,23 @@
 {
   "name": "fluxo-de-caixa",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
+  "description": "Sistema de Controle de Fluxo de Caixa - Versão Refatorada",
+  "main": "bin/www",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "start": "node ./bin/www",
     "dev": "cp .env.development .env && nodemon ./bin/www",
     "prod": "cp .env.production .env && node ./bin/www",
-    "watch": "cp .env.development .env && nodemon ./bin/www --watch routes --watch views --watch app.js",
+    "watch": "cp .env.development .env && nodemon ./bin/www --watch src --watch views --watch models --watch config",
+    "lint": "eslint src/ routes/ models/ config/ --ext .js",
+    "lint:fix": "eslint src/ routes/ models/ config/ --ext .js --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "ejs-lint": "npx ejs-lint views/**/*.ejs",
     "ejs-lint-single": "npx ejs-lint",
     "ejs-lint-watch": "nodemon --watch views --ext ejs --exec \"npm run ejs-lint\"",
@@ -15,23 +26,62 @@
     "setup-prod": "cp .env.production .env && echo 'Ambiente de produção configurado! LEMBRE-SE de ajustar as configurações!'",
     "env-check": "node config/env-validator.js",
     "prestart": "npm run ejs-lint",
-    "deploy-prepare": "npm run setup-prod && npm run ejs-lint && echo 'Deploy preparado! Projeto validado.'",
-    "heroku-postbuild": "npm run ejs-lint"
+    "predeploy": "npm run lint && npm run test && npm run ejs-lint",
+    "deploy-prepare": "npm run setup-prod && npm run predeploy && echo 'Deploy preparado! Projeto validado.'",
+    "heroku-postbuild": "npm run ejs-lint",
+    "logs:clear": "rm -rf logs/*.log",
+    "security:audit": "npm audit",
+    "security:fix": "npm audit fix",
+    "deps:check": "npm outdated",
+    "deps:update": "npm update"
   },
   "dependencies": {
+    "compression": "^1.7.4",
+    "connect-mongo": "^5.1.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^17.3.1",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
+    "express-rate-limit": "^7.1.5",
     "express-session": "^1.19.0",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "multer": "^2.0.2",
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "ejs-lint": "^2.0.1",
-    "nodemon": "^3.1.11"
-  }
+    "eslint": "^8.55.0",
+    "eslint-config-node": "^4.1.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-security": "^1.7.1",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.11",
+    "supertest": "^6.3.3"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "fluxo-de-caixa",
+    "controle-financeiro",
+    "ejs",
+    "financial-management"
+  ],
+  "author": {
+    "name": "Seu Nome",
+    "email": "seu.email@exemplo.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seu-usuario/fluxo-de-caixa.git"
+  },
+  "bugs": {
+    "url": "https://github.com/seu-usuario/fluxo-de-caixa/issues"
+  },
+  "homepage": "https://github.com/seu-usuario/fluxo-de-caixa#readme"
 }

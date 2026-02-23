@@ -1,40 +1,48 @@
 #!/usr/bin/env node
 
 /**
- * Module dependencies.
+ * Servidor HTTP refatorado com melhores práticas
  */
 
-var app = require('../app');
-var debug = require('debug')('fluxo-de-caixa:server');
-var http = require('http');
+// Configurar ambiente antes de importar módulos
+require('dotenv').config();
+const config = require('../src/config/environment');
 
 /**
- * Get port from environment and store in Express.
+ * Carregamento de módulos principais
  */
+const app = require('../src/app');
+const debug = require('debug')('fluxo-de-caixa:server');
+const http = require('http');
+const { logger } = require('../src/utils/logger');
 
-var port = normalizePort(process.env.PORT || '3000');
+/**
+ * Obter porta da configuração
+ */
+const port = normalizePort(config.PORT);
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Criar servidor HTTP
  */
-
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 /**
- * Listen on provided port, on all network interfaces.
+ * Configurar listeners do servidor
  */
-
-server.listen(port);
+server.listen(port, config.HOST);
 server.on('error', onError);
 server.on('listening', onListening);
+
+// Configurar graceful shutdown
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
 
 /**
  * Normalize a port into a number, string, or false.
  */
-
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -52,27 +60,27 @@ function normalizePort(val) {
 /**
  * Event listener for HTTP server "error" event.
  */
-
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
 
-  var bind = typeof port === 'string'
+  const bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      logger.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      logger.error(`${bind} is already in use`);
       process.exit(1);
       break;
     default:
+      logger.error('Server error:', error);
       throw error;
   }
 }
@@ -80,11 +88,78 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
+  const addr = server.address();
+  const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
+
   debug('Listening on ' + bind);
+
+  // Log startup info
+  logger.info(`🚀 ${config.app.name} v${config.app.version}`);
+  logger.info(`📊 Ambiente: ${config.NODE_ENV}`);
+  logger.info(`🌐 Servidor iniciado em http://${config.HOST}:${addr.port}`);
+
+  // Exibir informações de desenvolvimento
+  if (config.isDevelopment) {
+    logger.info('🔧 Modo de desenvolvimento ativo');
+    logger.info(`📝 Logs: ${config.logging.level}`);
+
+    // URLs úteis
+    console.log('\n📋 URLs úteis:');
+    console.log(`   • Dashboard: http://${config.HOST}:${addr.port}/fluxo-caixa`);
+    console.log(`   • Movimentações: http://${config.HOST}:${addr.port}/fluxo-caixa/movimentacoes`);
+    console.log(`   • Fluxo: http://${config.HOST}:${addr.port}/fluxo-caixa/fluxo`);
+    console.log(`   • Relatórios: http://${config.HOST}:${addr.port}/fluxo-caixa/relatorios`);
+
+    if (config.features.enableDebugRoutes) {
+      console.log(`   • Debug Contas: http://${config.HOST}:${addr.port}/fluxo-caixa/debug/contas/ordem`);
+    }
+
+    console.log('\n🎯 Para começar:');
+    console.log('   • npm run dev - Desenvolvimento com auto-reload');
+    console.log('   • npm run test - Executar testes');
+    console.log('   • npm run lint - Verificar código');
+    console.log('');
+  }
 }
+
+/**
+ * Graceful shutdown handler
+ */
+function gracefulShutdown(signal) {
+  logger.info(`Recebido ${signal}, iniciando shutdown graceful...`);
+
+  // Parar de aceitar novas conexões
+  server.close((err) => {
+    if (err) {
+      logger.error('Erro durante shutdown:', err);
+      process.exit(1);
+    }
+
+    logger.info('Servidor fechado com sucesso');
+
+    // Limpar recursos adicionais aqui
+    // Por exemplo: fechar conexões de banco de dados, limpar cache, etc.
+
+    process.exit(0);
+  });
+
+  // Forçar encerramento após timeout
+  setTimeout(() => {
+    logger.error('Forçando encerramento após timeout');
+    process.exit(1);
+  }, 10000);
+}
+
+// Tratamento de erros não capturados
+process.on('uncaughtException', (err) => {
+  logger.error('Exceção não capturada:', err);
+  gracefulShutdown('UNCAUGHT_EXCEPTION');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Promise rejeitada não tratada:', { reason, promise });
+  gracefulShutdown('UNHANDLED_REJECTION');
+});

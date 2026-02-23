@@ -1,4 +1,9 @@
-var express = require('express');
+/**
+ * Rotas do fluxo de caixa - Redireciona para nova arquitetura
+ */
+
+// Importar e exportar as rotas refatoradas
+module.exports = require('../src/routes/fluxo-caixa');
 var router = express.Router();
 
 // Helper functions para mensagens de sessão
