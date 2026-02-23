@@ -246,6 +246,9 @@ class FluxoCaixaService {
       const totaisPorConta = this._calcularTotaisPorConta(dadosPorContaMes, anoSelecionado);
       const totalGeral = Object.values(totaisPorMes).reduce((acc, val) => acc + val, 0);
 
+      // Importar funções helper do TipoConta
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+
       return {
         anoSelecionado,
         anosDisponiveis,
@@ -254,7 +257,13 @@ class FluxoCaixaService {
         totaisPorConta,
         totalGeral,
         todasCategorias,
-        nomesMeses: this._getNomesMeses()
+        nomesMeses: this._getNomesMeses(),
+        // Funções helper para templates EJS
+        TipoConta,
+        getTiposContaArray,
+        getDescricaoTipoConta,
+        getCorTipoConta,
+        getIconeTipoConta
       };
     } catch (error) {
       logger.error('Erro ao obter dados do fluxo anual', error);

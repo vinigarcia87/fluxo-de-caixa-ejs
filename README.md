@@ -352,3 +352,32 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 ---
 
 **Desenvolvido com ❤️ usando as melhores práticas de mercado**
+
+---
+
+## 📚 **Documentação Completa**
+
+**Toda a documentação do projeto está organizada no diretório [`DOCS/`](./DOCS/)**
+
+### 🔥 **Documentação Mais Importante:**
+
+- **[📋 Índice Completo](./DOCS/INDEX.md)** - Navegação de toda documentação
+- **[🔄 Guia de Migração](./DOCS/MIGRATION-GUIDE.md)** - Como usar a nova arquitetura
+- **[🛡️ Atualização de Segurança](./DOCS/SECURITY-UPDATE.md)** - 48 vulnerabilidades corrigidas
+- **[📦 Pacotes Corrigidos](./DOCS/PACKAGES-FIXED.md)** - Dependências atualizadas
+- **[🐛 Correção do Logger](./DOCS/BUGFIX-LOGGER.md)** - Bug resolvido
+
+### 🚀 **Para Começar Rápido:**
+
+```bash
+# 1. Ver toda documentação
+ls DOCS/
+
+# 2. Ler guia principal
+cat DOCS/INDEX.md
+
+# 3. Migração para nova arquitetura
+cat DOCS/MIGRATION-GUIDE.md
+```
+
+**📖 [Ver Índice Completo da Documentação →](./DOCS/INDEX.md)**

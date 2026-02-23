@@ -19,11 +19,19 @@ class FluxoCaixaController {
 
       const movimentacoesPeriodo = await FluxoCaixaService.getMovimentacoesByPeriodo(dataInicio, dataFim);
 
+      // Importar funções helper
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+
       res.render('fluxo-caixa/dashboard', {
         title: 'Fluxo de Caixa - Dashboard',
         resumo,
         ultimasMovimentacoes,
         movimentacoesPeriodo,
+        TipoConta,
+        getTiposContaArray,
+        getDescricaoTipoConta,
+        getCorTipoConta,
+        getIconeTipoConta
       });
     } catch (error) {
       next(error);
@@ -48,12 +56,20 @@ class FluxoCaixaController {
       const contas = await ContaService.getAllContas();
       const tipos = ContaService.getTiposContaArray();
 
+      // Importar funções helper
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+
       res.render('fluxo-caixa/movimentacoes', {
         title: 'Movimentações',
         movimentacoes,
         contas,
         tipos,
-        filtros: { dataInicio, dataFim, contaId, tipoConta }
+        filtros: { dataInicio, dataFim, contaId, tipoConta },
+        TipoConta,
+        getTiposContaArray,
+        getDescricaoTipoConta,
+        getCorTipoConta,
+        getIconeTipoConta
       });
     } catch (error) {
       next(error);
@@ -67,11 +83,19 @@ class FluxoCaixaController {
     try {
       const contas = await ContaService.getAllContas();
 
+      // Importar funções helper
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+
       res.render('fluxo-caixa/movimentacao-form', {
         title: 'Nova Movimentação',
         contas,
         movimentacao: null,
-        errors: null
+        errors: null,
+        TipoConta,
+        getTiposContaArray,
+        getDescricaoTipoConta,
+        getCorTipoConta,
+        getIconeTipoConta
       });
     } catch (error) {
       next(error);
@@ -87,12 +111,21 @@ class FluxoCaixaController {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         const contas = await ContaService.getAllContas();
+
+        // Importar funções helper
+        const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+
         return res.render('fluxo-caixa/movimentacao-form', {
           title: 'Nova Movimentação',
           contas,
           movimentacao: null,
           errors: errors.array(),
-          formData: req.body
+          formData: req.body,
+          TipoConta,
+          getTiposContaArray,
+          getDescricaoTipoConta,
+          getCorTipoConta,
+          getIconeTipoConta
         });
       }
 
@@ -103,12 +136,21 @@ class FluxoCaixaController {
     } catch (error) {
       if (error instanceof AppError) {
         const contas = await ContaService.getAllContas();
+
+        // Importar funções helper
+        const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+
         return res.render('fluxo-caixa/movimentacao-form', {
           title: 'Nova Movimentação',
           contas,
           movimentacao: null,
           errors: [{ msg: error.message }],
-          formData: req.body
+          formData: req.body,
+          TipoConta,
+          getTiposContaArray,
+          getDescricaoTipoConta,
+          getCorTipoConta,
+          getIconeTipoConta
         });
       }
       next(error);
@@ -129,11 +171,19 @@ class FluxoCaixaController {
 
       const contas = await ContaService.getAllContas();
 
+      // Importar funções helper
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+
       res.render('fluxo-caixa/movimentacao-form', {
         title: 'Editar Movimentação',
         contas,
         movimentacao,
-        errors: null
+        errors: null,
+        TipoConta,
+        getTiposContaArray,
+        getDescricaoTipoConta,
+        getCorTipoConta,
+        getIconeTipoConta
       });
     } catch (error) {
       next(error);
@@ -153,11 +203,19 @@ class FluxoCaixaController {
         const contas = await ContaService.getAllContas();
         const movimentacao = await FluxoCaixaService.getMovimentacaoById(movimentacaoId);
 
+        // Importar funções helper
+        const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+
         return res.render('fluxo-caixa/movimentacao-form', {
           title: 'Editar Movimentação',
           contas,
           movimentacao,
-          errors: errors.array()
+          errors: errors.array(),
+          TipoConta,
+          getTiposContaArray,
+          getDescricaoTipoConta,
+          getCorTipoConta,
+          getIconeTipoConta
         });
       }
 
@@ -229,13 +287,21 @@ class FluxoCaixaController {
 
       const relatorio = await FluxoCaixaService.gerarRelatorio(dataInicioQuery, dataFimQuery);
 
+      // Importar funções helper
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+
       res.render('fluxo-caixa/relatorios', {
         title: 'Relatórios Financeiros',
         ...relatorio,
         filtros: {
           dataInicio: dataInicioQuery.toISOString().split('T')[0],
           dataFim: dataFimQuery.toISOString().split('T')[0]
-        }
+        },
+        TipoConta,
+        getTiposContaArray,
+        getDescricaoTipoConta,
+        getCorTipoConta,
+        getIconeTipoConta
       });
     } catch (error) {
       next(error);
