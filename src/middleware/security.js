@@ -1,6 +1,6 @@
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const compression = require('compression');
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import compression from 'compression';
 
 /**
  * Configuração do Helmet para segurança
@@ -204,7 +204,7 @@ const bruteForceProtection = (maxAttempts = 5, windowMs = 15 * 60 * 1000) => {
   };
 };
 
-module.exports = {
+export {
   helmetConfig,
   generalLimiter,
   formLimiter,

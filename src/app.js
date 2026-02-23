@@ -1,39 +1,45 @@
+// ES modules utilities
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 // Configurar variáveis de ambiente ANTES de tudo
-const config = require('./config/environment');
+import config from './config/environment.js';
 
 // Imports principais
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
+import express from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
 
 // Middleware de segurança e logging
-const {
+import {
   helmetConfig,
   generalLimiter,
   compressionConfig,
   sanitizeHeaders,
   validateOrigin,
   logSuspiciousActivity
-} = require('./middleware/security');
+} from './middleware/security.js';
 
-const {
+import {
   getSessionConfig,
   flashMessages,
   sessionLocals,
   cleanupSession
-} = require('./middleware/session');
+} from './middleware/session.js';
 
-const { requestLogger, logger } = require('./utils/logger');
-const { globalErrorHandler, notFound } = require('./utils/errorHandler');
+import { requestLogger, logger } from './utils/logger.js';
+import { globalErrorHandler, notFound } from './utils/errorHandler.js';
 
 // Validar configuração de ambiente
-const { validateEnv } = require('../config/env-validator');
+import { validateEnv } from './config/env-validator.js';
 validateEnv();
 
 // Routes
-const indexRouter = require('../routes/index');
-const usersRouter = require('../routes/users');
-const fluxoCaixaRouter = require('./routes/fluxo-caixa');
+import indexRouter from './routes/index.js';
+import usersRouter from './routes/users.js';
+import fluxoCaixaRouter from './routes/fluxo-caixa.js';
 
 // Criar aplicação Express
 const app = express();
@@ -43,7 +49,7 @@ const app = express();
 // ============================================================================
 
 // View engine setup
-app.set('views', path.join(__dirname, '../views'));
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // Trust proxy (para rate limiting e logging corretos)
@@ -96,7 +102,7 @@ app.use(cookieParser());
 // ============================================================================
 
 // Configurar sessão
-const session = require('express-session');
+import session from 'express-session';
 app.use(session(getSessionConfig()));
 
 // Middleware para mensagens flash
@@ -179,4 +185,4 @@ if (config.isDevelopment) {
   config.displayConfig();
 }
 
-module.exports = app;
+export default app;

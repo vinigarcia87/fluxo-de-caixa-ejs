@@ -20,7 +20,7 @@ class FluxoCaixaController {
       const movimentacoesPeriodo = await FluxoCaixaService.getMovimentacoesByPeriodo(dataInicio, dataFim);
 
       // Importar funções helper
-      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../models/TipoConta');
 
       res.render('fluxo-caixa/dashboard', {
         title: 'Fluxo de Caixa - Dashboard',
@@ -57,7 +57,7 @@ class FluxoCaixaController {
       const tipos = ContaService.getTiposContaArray();
 
       // Importar funções helper
-      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../models/TipoConta');
 
       res.render('fluxo-caixa/movimentacoes', {
         title: 'Movimentações',
@@ -84,7 +84,7 @@ class FluxoCaixaController {
       const contas = await ContaService.getAllContas();
 
       // Importar funções helper
-      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../models/TipoConta');
 
       res.render('fluxo-caixa/movimentacao-form', {
         title: 'Nova Movimentação',
@@ -113,7 +113,7 @@ class FluxoCaixaController {
         const contas = await ContaService.getAllContas();
 
         // Importar funções helper
-        const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+        const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../models/TipoConta');
 
         return res.render('fluxo-caixa/movimentacao-form', {
           title: 'Nova Movimentação',
@@ -138,7 +138,7 @@ class FluxoCaixaController {
         const contas = await ContaService.getAllContas();
 
         // Importar funções helper
-        const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+        const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../models/TipoConta');
 
         return res.render('fluxo-caixa/movimentacao-form', {
           title: 'Nova Movimentação',
@@ -172,7 +172,7 @@ class FluxoCaixaController {
       const contas = await ContaService.getAllContas();
 
       // Importar funções helper
-      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../models/TipoConta');
 
       res.render('fluxo-caixa/movimentacao-form', {
         title: 'Editar Movimentação',
@@ -204,7 +204,7 @@ class FluxoCaixaController {
         const movimentacao = await FluxoCaixaService.getMovimentacaoById(movimentacaoId);
 
         // Importar funções helper
-        const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+        const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../models/TipoConta');
 
         return res.render('fluxo-caixa/movimentacao-form', {
           title: 'Editar Movimentação',
@@ -288,7 +288,7 @@ class FluxoCaixaController {
       const relatorio = await FluxoCaixaService.gerarRelatorio(dataInicioQuery, dataFimQuery);
 
       // Importar funções helper
-      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../models/TipoConta');
 
       res.render('fluxo-caixa/relatorios', {
         title: 'Relatórios Financeiros',

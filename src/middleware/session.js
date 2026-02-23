@@ -1,5 +1,5 @@
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
 
 /**
  * Configuração da sessão baseada no ambiente
@@ -169,7 +169,7 @@ const destroySession = (req, res, callback) => {
   });
 };
 
-module.exports = {
+export {
   getSessionConfig,
   flashMessages,
   sessionLocals,

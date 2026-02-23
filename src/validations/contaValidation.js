@@ -1,7 +1,7 @@
 const { body } = require('express-validator');
-const { getCategoriaById } = require('../../models/CategoriaConta');
-const { getTiposContaArray } = require('../../models/TipoConta');
-const { contaExists } = require('../../models/Conta');
+const { getCategoriaById } = require('../models/CategoriaConta');
+const { getTiposContaArray } = require('../models/TipoConta');
+const { contaExists } = require('../models/Conta');
 
 /**
  * Validações para criação de conta

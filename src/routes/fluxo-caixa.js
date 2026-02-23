@@ -112,8 +112,8 @@ router.post('/fluxo/conta/add',
         CategoriaConta,
         addCategoria,
         categoriaExists
-      } = require('../../models/CategoriaConta');
-      const { Conta, addConta, contaExists } = require('../../models/Conta');
+      } = require('../models/CategoriaConta');
+      const { Conta, addConta, contaExists } = require('../models/Conta');
 
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -173,9 +173,9 @@ router.post('/fluxo/movimentacao/add',
     try {
       // Importar lógica do arquivo original mantendo compatibilidade
       const { validationResult } = require('express-validator');
-      const { ContaValor, addContaValor } = require('../../models/ContaValor');
-      const { getContaById, isContaSaldoAnterior } = require('../../models/Conta');
-      const { recalcularSaldosAno } = require('../../models/ContaValor');
+      const { ContaValor, addContaValor } = require('../models/ContaValor');
+      const { getContaById, isContaSaldoAnterior } = require('../models/Conta');
+      const { recalcularSaldosAno } = require('../models/ContaValor');
 
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -222,7 +222,7 @@ router.post('/fluxo/contas/ordem',
   atualizarOrdemContasValidation,
   catchAsync(async (req, res, next) => {
     try {
-      const { atualizarOrdemContas } = require('../../models/Conta');
+      const { atualizarOrdemContas } = require('../models/Conta');
       const { novaOrdem } = req.body;
 
       const sucesso = atualizarOrdemContas(novaOrdem);

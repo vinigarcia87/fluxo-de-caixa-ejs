@@ -156,7 +156,7 @@ const catchAsync = (fn) => {
   };
 };
 
-module.exports = {
+export {
   AppError,
   globalErrorHandler,
   notFound,

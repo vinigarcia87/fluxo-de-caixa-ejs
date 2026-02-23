@@ -45,7 +45,7 @@ function getIconeTipoConta(tipo) {
   return icones[tipo] || 'bi-circle';
 }
 
-module.exports = {
+export {
   TipoConta,
   isValidTipoConta,
   getTiposContaArray,

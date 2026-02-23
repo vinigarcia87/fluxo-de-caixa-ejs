@@ -10,7 +10,7 @@ const {
   getResumoFinanceiro,
   calcularESalvarSaldosAnteriores,
   recalcularSaldosAno
-} = require('../../models/ContaValor');
+} = require('../models/ContaValor');
 
 const ContaService = require('./ContaService');
 const { AppError } = require('../utils/errorHandler');
@@ -247,7 +247,7 @@ class FluxoCaixaService {
       const totalGeral = Object.values(totaisPorMes).reduce((acc, val) => acc + val, 0);
 
       // Importar funções helper do TipoConta
-      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../../models/TipoConta');
+      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../models/TipoConta');
 
       return {
         anoSelecionado,

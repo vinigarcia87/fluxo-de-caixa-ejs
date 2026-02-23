@@ -1,6 +1,15 @@
-module.exports = {
+export default {
   // Ambiente de teste
   testEnvironment: 'node',
+
+  // Configuração para ES modules
+  extensionsToTreatAsEsm: ['.js'],
+  globals: {
+    'ts-jest': {
+      useESM: true
+    }
+  },
+  transform: {},
 
   // Diretórios de teste
   testMatch: [
@@ -12,16 +21,14 @@ module.exports = {
   testPathIgnorePatterns: [
     '/node_modules/',
     '/public/',
-    '/views/'
+    '/src/views/'
   ],
 
   // Configuração de cobertura
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.js',
-    'models/**/*.js',
-    'routes/**/*.js',
-    'config/**/*.js',
+    '!src/views/**',
     '!src/**/*.test.js',
     '!src/**/*.spec.js',
     '!**/node_modules/**',

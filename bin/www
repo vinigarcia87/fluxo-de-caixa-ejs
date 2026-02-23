@@ -5,16 +5,18 @@
  */
 
 // Configurar ambiente antes de importar módulos
-require('dotenv').config();
-const config = require('../src/config/environment');
+import dotenv from 'dotenv';
+dotenv.config();
+import config from '../src/config/environment.js';
 
 /**
  * Carregamento de módulos principais
  */
-const app = require('../src/app');
-const debug = require('debug')('fluxo-de-caixa:server');
-const http = require('http');
-const { logger } = require('../src/utils/logger');
+import app from '../src/app.js';
+import debug from 'debug';
+const debugServer = debug('fluxo-de-caixa:server');
+import http from 'http';
+import { logger } from '../src/utils/logger.js';
 
 /**
  * Obter porta da configuração
@@ -94,7 +96,7 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
 
-  debug('Listening on ' + bind);
+  debugServer('Listening on ' + bind);
 
   // Log startup info
   logger.info(`🚀 ${config.app.name} v${config.app.version}`);

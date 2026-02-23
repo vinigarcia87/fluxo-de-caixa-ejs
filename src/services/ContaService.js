@@ -15,7 +15,7 @@ const {
   definirOrdemPorCategoria,
   isContaSaldoAnterior,
   CONTA_SALDO_ANTERIOR_ID
-} = require('../../models/Conta');
+} = require('../models/Conta');
 
 const {
   CategoriaConta,
@@ -25,7 +25,7 @@ const {
   updateCategoria,
   deleteCategoria,
   categoriaExists
-} = require('../../models/CategoriaConta');
+} = require('../models/CategoriaConta');
 
 const {
   TipoConta,
@@ -33,9 +33,9 @@ const {
   getDescricaoTipoConta,
   getCorTipoConta,
   getIconeTipoConta
-} = require('../../models/TipoConta');
+} = require('../models/TipoConta');
 
-const { getContaValoresByConta } = require('../../models/ContaValor');
+const { getContaValoresByConta } = require('../models/ContaValor');
 
 const { AppError } = require('../utils/errorHandler');
 const logger = require('../utils/logger');

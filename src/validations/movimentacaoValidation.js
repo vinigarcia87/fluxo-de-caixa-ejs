@@ -1,5 +1,5 @@
 const { body } = require('express-validator');
-const { getContaById } = require('../../models/Conta');
+const { getContaById } = require('../models/Conta');
 
 /**
  * Validações para criação de movimentação

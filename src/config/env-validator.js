@@ -74,10 +74,12 @@ function validateEnv() {
   };
 }
 
-module.exports = { validateEnv };
+export { validateEnv };
 
 // Executar validação se chamado diretamente
-if (require.main === module) {
-  require('dotenv').config();
-  validateEnv();
+if (import.meta.url === `file://${process.argv[1]}`) {
+  import('dotenv').then(dotenv => {
+    dotenv.config();
+    validateEnv();
+  });
 }

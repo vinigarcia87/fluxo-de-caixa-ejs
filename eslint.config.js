@@ -1,22 +1,17 @@
-const js = require('@eslint/js');
-const security = require('eslint-plugin-security');
+import js from '@eslint/js';
+import security from 'eslint-plugin-security';
 
-module.exports = [
+export default [
   js.configs.recommended,
   security.configs.recommended,
   {
     languageOptions: {
       ecmaVersion: 2022,
-      sourceType: 'commonjs',
+      sourceType: 'module',
       globals: {
         console: 'readonly',
         process: 'readonly',
         Buffer: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        module: 'readonly',
-        require: 'readonly',
-        exports: 'readonly',
         global: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',

@@ -79,6 +79,36 @@ Este diretório contém toda a documentação do projeto, organizada por tópico
     - ✅ Todos os templates com acesso às funções TipoConta
     - 🎨 Ícones e cores dinâmicas funcionando
 
+12. **[BUGFIX-MODULE-IMPORTS.md](./BUGFIX-MODULE-IMPORTS.md)**
+    - 🐛 **Imports de módulos corrigidos**
+    - ⚠️ Erro `Cannot find module '../routes/index'` resolvido
+    - 📁 Caminhos relativos ajustados para nova estrutura
+    - ✅ Aplicação iniciando corretamente
+
+13. **[REFACTOR-MOVE-DIRECTORIES.md](./REFACTOR-MOVE-DIRECTORIES.md)**
+    - 🏗️ **Reorganização de diretórios**
+    - 📁 Pastas `config` e `models` movidas para `src/`
+    - 🔧 27 imports atualizados em 8 arquivos
+    - ✅ Estrutura mais profissional e organizada
+
+14. **[REFACTOR-MOVE-VIEWS.md](./REFACTOR-MOVE-VIEWS.md)**
+    - 📄 **Consolidação do diretório views**
+    - 🏗️ Pasta `views` movida para `src/views/`
+    - 📦 Scripts npm simplificados e otimizados
+    - ✅ 100% do código centralizado em src/
+
+15. **[REFACTOR-ES-MODULES-PARTIAL.md](./REFACTOR-ES-MODULES-PARTIAL.md)**
+    - 🔄 **Conversão para ES Modules (Parcial)**
+    - 📦 60% dos arquivos convertidos (14/23)
+    - ⚙️ Configurações atualizadas (Jest, ESLint)
+    - ⚠️ Conversão incompleta - aplicação não inicia
+
+16. **[BUGFIX-PUBLIC-PATHS.md](./BUGFIX-PUBLIC-PATHS.md)**
+    - 🐛 **Caminhos da pasta public corrigidos**
+    - 📸 Sistema de upload de usuários restaurado
+    - 🔧 3 referências de caminho atualizadas
+    - ✅ Funcionalidade de fotos 100% operacional
+
 ### 🎯 **Funcionalidades Específicas**
 
 11. **[FLUXO_DE_CAIXA_ESTRUTURA.md](./FLUXO_DE_CAIXA_ESTRUTURA.md)**

@@ -6,7 +6,7 @@ const FluxoCaixaService = require('../../src/services/FluxoCaixaService');
 const { AppError } = require('../../src/utils/errorHandler');
 
 // Mock dos modelos
-jest.mock('../../models/ContaValor', () => ({
+jest.mock('../../src/models/ContaValor', () => ({
   ContaValor: jest.fn(),
   getAllContaValores: jest.fn(),
   getContaValorById: jest.fn(),
@@ -30,7 +30,7 @@ const {
   updateContaValor,
   deleteContaValor,
   getResumoFinanceiro
-} = require('../../models/ContaValor');
+} = require('../../src/models/ContaValor');
 
 const ContaService = require('../../src/services/ContaService');
 
