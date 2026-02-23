@@ -1,0 +1,11 @@
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fundo circular -->
+  <circle cx="8" cy="8" r="7" fill="#667eea" stroke="#fff" stroke-width="0.5"/>
+
+  <!-- Símbolo de dólar -->
+  <text x="8" y="11" text-anchor="middle" fill="#fff" font-family="Arial" font-size="8" font-weight="bold">$</text>
+
+  <!-- Mini setas indicando fluxo -->
+  <polygon points="5,4 8,2 11,4" fill="#28a745"/>
+  <polygon points="5,12 8,14 11,12" fill="#dc3545"/>
+</svg>

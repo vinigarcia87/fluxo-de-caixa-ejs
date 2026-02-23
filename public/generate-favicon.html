@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerador de Favicon</title>
+</head>
+<body>
+    <h3>Gerador de Favicon - Fluxo de Caixa</h3>
+
+    <!-- Canvas para gerar favicon 16x16 -->
+    <canvas id="favicon16" width="16" height="16"></canvas>
+    <br><br>
+
+    <!-- Canvas para gerar favicon 32x32 -->
+    <canvas id="favicon32" width="32" height="32"></canvas>
+    <br><br>
+
+    <button onclick="generateFavicons()">Gerar Favicons</button>
+    <br><br>
+
+    <div id="downloads"></div>
+
+    <script>
+        function drawFavicon(ctx, size) {
+            const center = size / 2;
+            const radius = size / 2 - 1;
+
+            // Fundo circular com gradiente
+            const gradient = ctx.createRadialGradient(center, center, 0, center, center, radius);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(center, center, radius, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Borda branca
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = size > 16 ? 1 : 0.5;
+            ctx.stroke();
+
+            // Símbolo $
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${Math.floor(size * 0.5)}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('$', center, center);
+
+            // Setas de fluxo (apenas para tamanho maior)
+            if (size >= 32) {
+                // Seta verde (receita) - para cima
+                ctx.fillStyle = '#28a745';
+                ctx.beginPath();
+                ctx.moveTo(center - 4, 6);
+                ctx.lineTo(center, 3);
+                ctx.lineTo(center + 4, 6);
+                ctx.fill();
+
+                // Seta vermelha (despesa) - para baixo
+                ctx.fillStyle = '#dc3545';
+                ctx.beginPath();
+                ctx.moveTo(center - 4, size - 6);
+                ctx.lineTo(center, size - 3);
+                ctx.lineTo(center + 4, size - 6);
+                ctx.fill();
+            }
+        }
+
+        function generateFavicons() {
+            // Gerar favicon 16x16
+            const canvas16 = document.getElementById('favicon16');
+            const ctx16 = canvas16.getContext('2d');
+            drawFavicon(ctx16, 16);
+
+            // Gerar favicon 32x32
+            const canvas32 = document.getElementById('favicon32');
+            const ctx32 = canvas32.getContext('2d');
+            drawFavicon(ctx32, 32);
+
+            // Criar links de download
+            const downloads = document.getElementById('downloads');
+            downloads.innerHTML = `
+                <h4>Downloads:</h4>
+                <a href="${canvas16.toDataURL()}" download="favicon-16x16.png">Download favicon 16x16.png</a><br>
+                <a href="${canvas32.toDataURL()}" download="favicon-32x32.png">Download favicon 32x32.png</a><br>
+                <p><small>Salve esses arquivos na pasta public/ e adicione as tags HTML no layout.</small></p>
+            `;
+        }
+
+        // Gerar automaticamente ao carregar
+        window.onload = generateFavicons;
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "name": "fluxo-de-caixa",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "cp .env.development .env && nodemon ./bin/www",
+    "prod": "cp .env.production .env && node ./bin/www",
+    "watch": "cp .env.development .env && nodemon ./bin/www --watch routes --watch views --watch app.js",
+    "ejs-lint": "npx ejs-lint views/**/*.ejs",
+    "ejs-lint-single": "npx ejs-lint",
+    "ejs-lint-watch": "nodemon --watch views --ext ejs --exec \"npm run ejs-lint\"",
+    "build": "npm install --production",
+    "setup-dev": "cp .env.development .env && echo 'Ambiente de desenvolvimento configurado!'",
+    "setup-prod": "cp .env.production .env && echo 'Ambiente de produção configurado! LEMBRE-SE de ajustar as configurações!'",
+    "env-check": "node config/env-validator.js",
+    "prestart": "npm run ejs-lint",
+    "deploy-prepare": "npm run setup-prod && npm run ejs-lint && echo 'Deploy preparado! Projeto validado.'",
+    "heroku-postbuild": "npm run ejs-lint"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^17.3.1",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "express-session": "^1.19.0",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "multer": "^2.0.2",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "ejs-lint": "^2.0.1",
+    "nodemon": "^3.1.11"
+  }
+}

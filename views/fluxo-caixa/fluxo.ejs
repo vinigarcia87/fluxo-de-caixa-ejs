@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.png">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- SortableJS para drag and drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .main-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+        }
+
+        .year-selector {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+        }
+
+        .year-selector:focus {
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+            border-color: #667eea;
+        }
+
+        .fluxo-table {
+            font-size: 0.9rem;
+        }
+
+        .fluxo-table th {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 2px solid #667eea;
+            font-weight: 600;
+            text-align: center;
+            padding: 12px 8px;
+        }
+
+        .fluxo-table td {
+            text-align: center;
+            padding: 10px 8px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 500;
+        }
+
+        .conta-cell {
+            text-align: left !important;
+            min-width: 200px;
+            background: rgba(248, 249, 250, 0.5);
+            font-weight: 600;
+            padding: 12px 15px; /* Adicionar mais padding para acomodar o botão */
+        }
+
+        .valor-positivo {
+            color: #28a745;
+        }
+
+        .valor-negativo {
+            color: #dc3545;
+        }
+
+        .valor-zero {
+            color: #6c757d;
+            opacity: 0.7;
+        }
+
+        .total-row {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .total-row td {
+            border-bottom: none;
+            padding: 15px 8px;
+        }
+
+        .mes-header {
+            writing-mode: horizontal-tb;
+            min-width: 90px;
+        }
+
+        .table-container {
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+        }
+
+        .breadcrumb {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+        }
+
+        .header-actions {
+            margin-bottom: 2rem;
+        }
+
+        .icon-tipo {
+            margin-right: 8px;
+        }
+
+        .badge-categoria {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .fluxo-table {
+                font-size: 0.8rem;
+            }
+
+            .fluxo-table th,
+            .fluxo-table td {
+                padding: 8px 4px;
+            }
+
+            .mes-header {
+                min-width: 70px;
+            }
+
+            .conta-cell {
+                min-width: 150px;
+            }
+        }
+
+        /* Animações */
+        .table-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilos da Modal de Nova Conta */
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .modal-body .form-control:focus,
+        .modal-body .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+        }
+
+        .modal-body .alert-info {
+            background-color: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.2);
+            color: #495057;
+        }
+
+        .modal .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+
+        .modal .btn-primary:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-1px);
+        }
+
+        /* Validação visual melhorada */
+        .was-validated .form-control:valid,
+        .was-validated .form-select:valid {
+            border-color: #28a745;
+        }
+
+        .was-validated .form-control:invalid,
+        .was-validated .form-select:invalid {
+            border-color: #dc3545;
+        }
+
+        /* Estilos da Modal de Nova Movimentação */
+        .modal-movimentacao .modal-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        /* Células clicáveis da tabela */
+        .celula-clicavel {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            border: 1px solid transparent;
+        }
+
+        .celula-clicavel:hover {
+            background-color: rgba(40, 167, 69, 0.08);
+            border-color: rgba(40, 167, 69, 0.3);
+            transform: scale(1.01);
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.1);
+        }
+
+        .celula-clicavel:active {
+            background-color: rgba(40, 167, 69, 0.15);
+            transform: scale(0.99);
+        }
+
+        /* Indicator de célula clicável */
+        .celula-clicavel::after {
+            content: "+";
+            position: absolute;
+            top: 3px;
+            right: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #28a745;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .celula-clicavel:hover::after {
+            opacity: 0.7;
+        }
+
+        /* Não aplicar efeitos nas células de total */
+        .total-row .celula-clicavel {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .total-row .celula-clicavel::after {
+            display: none;
+        }
+
+        /* Campo de valor com formatação */
+        #movValor {
+            text-align: right;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Readonly fields styling */
+        .form-control[readonly],
+        .form-select[disabled] {
+            background-color: #f8f9fa !important;
+            opacity: 1;
+        }
+
+        /* Estilos para conta especial */
+        .conta-especial {
+            background-color: rgba(255, 193, 7, 0.05);
+            border-left: 3px solid #ffc107;
+        }
+
+        .conta-especial-cell {
+            background-color: rgba(255, 193, 7, 0.08);
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .conta-especial-cell::after {
+            content: "🔒";
+            position: absolute;
+            top: 3px;
+            right: 6px;
+            font-size: 10px;
+            opacity: 0.5;
+        }
+
+        .conta-especial .conta-cell {
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+
+        /* Estilos para drag and drop */
+        .conta-row {
+            cursor: move;
+            transition: all 0.2s ease;
+        }
+
+        .conta-row:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .conta-row.sortable-ghost {
+            opacity: 0.4;
+            background: rgba(108, 117, 125, 0.2);
+        }
+
+        .conta-row.sortable-drag {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: rotate(2deg);
+        }
+
+        /* Saldo anterior não pode ser arrastado */
+        .conta-especial {
+            cursor: not-allowed !important;
+        }
+
+        .drag-handle {
+            cursor: move;
+            color: #6c757d;
+            opacity: 0.6;
+            margin-right: 8px;
+            transition: opacity 0.2s ease;
+        }
+
+        .conta-row:hover .drag-handle {
+            opacity: 1;
+        }
+
+        .conta-especial .drag-handle {
+            cursor: not-allowed;
+            opacity: 0.3;
+        }
+
+        /* Feedback visual durante drag */
+        .sortable-chosen {
+            background: rgba(40, 167, 69, 0.1) !important;
+        }
+
+        /* Melhor indicação para contas sem movimentação */
+        .celula-clicavel .valor-zero {
+            opacity: 0.6;
+            font-style: italic;
+        }
+
+        .celula-clicavel:hover .valor-zero {
+            opacity: 1;
+            font-style: normal;
+        }
+
+        /* Dica visual para contas vazias */
+        .celula-clicavel.conta-vazia {
+            background-color: rgba(108, 117, 125, 0.03);
+        }
+
+        .celula-clicavel.conta-vazia:hover {
+            background-color: rgba(40, 167, 69, 0.08);
+        }
+
+        /* Estilos para Nova Categoria */
+        #novaCategoriaDiv {
+            border-left: 3px solid #28a745;
+            padding-left: 15px;
+            background-color: rgba(40, 167, 69, 0.05);
+            border-radius: 5px;
+        }
+
+        #categoriaId option[value="nova"] {
+            background-color: #e8f5e8;
+            color: #155724;
+            font-weight: bold;
+        }
+
+        #novaCategoriaNome:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+        }
+
+        .nova-categoria-feedback {
+            color: #28a745;
+            font-size: 0.875em;
+        }
+
+        /* Botão Nova Conta no cabeçalho da tabela */
+        .conta-cell .btn-outline-primary {
+            border-color: rgba(102, 126, 234, 0.6);
+            color: #667eea;
+            border-width: 1px;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            line-height: 1.2;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+            opacity: 0.8;
+        }
+
+        .conta-cell .btn-outline-primary:hover {
+            background-color: #667eea;
+            border-color: #667eea;
+            color: white;
+            transform: scale(1.1);
+            opacity: 1;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        }
+
+        .conta-cell .btn-outline-primary:focus {
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            opacity: 1;
+        }
+
+        /* Manter o layout do cabeçalho bem organizado */
+        .conta-cell .d-flex {
+            min-height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="bi bi-house"></i> Início</a></li>
+                <li class="breadcrumb-item"><a href="/fluxo-caixa"><i class="bi bi-graph-up"></i> Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <i class="bi bi-table"></i> Fluxo de Caixa
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Header com Controles -->
+        <div class="header-actions">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h1 class="text-white mb-0">
+                        <i class="bi bi-table me-2"></i>Fluxo de Caixa Anual
+                    </h1>
+                    <p class="text-white-50 mb-0">Visão consolidada por conta e mês</p>
+                </div>
+                <div class="col-auto">
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Seletor de Ano -->
+                        <div class="d-flex align-items-center">
+                            <label class="text-white me-2 fw-bold">Ano:</label>
+                            <select id="yearSelector" class="form-select year-selector">
+                                <% anosDisponiveis.forEach(function(ano) { %>
+                                <option value="<%= ano %>" <%= ano === anoSelecionado ? 'selected' : '' %>>
+                                    <%= ano %>
+                                </option>
+                                <% }); %>
+                            </select>
+                        </div>
+
+                        <!-- Ações -->
+                        <div class="btn-group" role="group">
+                            <a href="/fluxo-caixa/movimentacoes/add" class="btn btn-outline-light">
+                                <i class="bi bi-plus-circle me-2"></i>Nova Movimentação
+                            </a>
+                            <a href="/fluxo-caixa/movimentacoes" class="btn btn-outline-light">
+                                <i class="bi bi-list me-2"></i>Ver Movimentações
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagens -->
+        <% if (message) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i><%= message %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } %>
+        <% if (error) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i><%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } %>
+
+        <!-- Tabela Principal -->
+        <div class="card main-card">
+            <div class="card-header bg-transparent border-0 pb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-calendar3 me-2"></i>Fluxo de Caixa - <%= anoSelecionado %>
+                    </h5>
+                    <div class="text-end">
+                        <small class="text-muted">Total Geral:</small>
+                        <div class="fw-bold fs-5 <%= totalGeral >= 0 ? 'valor-positivo' : 'valor-negativo' %>">
+                            R$ <%= Math.abs(totalGeral).toFixed(2).replace('.', ',') %>
+                            <% if (totalGeral < 0) { %><small class="text-muted">(negativo)</small><% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-container table-fade-in">
+                    <table class="table table-hover fluxo-table mb-0">
+                        <thead>
+                            <tr>
+                                <th class="conta-cell">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>
+                                            <i class="bi bi-building me-2"></i>Conta
+                                        </span>
+                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                data-bs-toggle="modal" data-bs-target="#novaContaModal"
+                                                title="Adicionar nova conta">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
+                                </th>
+                                <% nomesMeses.forEach(function(mes, index) { %>
+                                <th class="mes-header">
+                                    <%= mes.substring(0, 3) %>
+                                    <br><small class="text-muted">
+                                        <%= (index + 1).toString().padStart(2, '0') %>
+                                    </small>
+                                </th>
+                                <% }); %>
+                                <th class="mes-header">
+                                    <strong>Média</strong>
+                                    <br><small class="text-muted">do Ano</small>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="contas-tbody">
+                            <% Object.values(dadosPorContaMes).forEach(function(item) { %>
+                            <tr class="conta-row <%= item.conta.id === 999 ? 'conta-especial' : '' %>"
+                                data-conta-id="<%= item.conta.id %>">
+                                <td class="conta-cell">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-grip-vertical drag-handle"
+                                           title="<%= item.conta.id === 999 ? 'Posição fixa - não pode ser movida' : 'Arrastar para reordenar' %>"></i>
+                                        <i class="<%= getIconeTipoConta(item.conta.tipoConta) %> text-<%= getCorTipoConta(item.conta.tipoConta) %> icon-tipo"></i>
+                                        <div>
+                                            <div class="fw-semibold">
+                                                <%= item.conta.nomeConta %>
+                                                <% if (item.conta.id === 999) { %>
+                                                <small class="badge bg-warning text-dark ms-2">
+                                                    <i class="bi bi-lock-fill"></i> Automática
+                                                </small>
+                                                <% } %>
+                                            </div>
+                                            <small class="badge badge-categoria bg-light text-dark">
+                                                <%= item.conta.categoriaConta.categoria %>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <% for (let mes = 0; mes < 12; mes++) { %>
+                                <% const valor = item.meses[mes]; %>
+                                <td class="<%= item.conta.id === 999 ? 'conta-especial-cell' : 'celula-clicavel' %><%= valor === 0 && item.conta.id !== 999 ? ' conta-vazia' : '' %>"
+                                    <% if (item.conta.id !== 999) { %>
+                                    data-conta-id="<%= item.conta.id %>"
+                                    data-conta-nome="<%= item.conta.nomeConta %>"
+                                    data-conta-tipo="<%= item.conta.tipoConta %>"
+                                    data-conta-categoria="<%= item.conta.categoriaConta.categoria %>"
+                                    data-mes="<%= mes %>"
+                                    data-ano="<%= anoSelecionado %>"
+                                    <% if (valor === 0) { %>
+                                    title="Clique para adicionar primeira movimentação em <%= nomesMeses[mes] %>/<%= anoSelecionado %> - Conta sem movimentações"
+                                    <% } else { %>
+                                    title="Clique para adicionar movimentação em <%= nomesMeses[mes] %>/<%= anoSelecionado %>"
+                                    <% } %>
+                                    <% } else { %>
+                                    title="Saldo calculado automaticamente do mês anterior"
+                                    <% } %>>
+                                    <span class="<%= valor > 0 ? 'valor-positivo' : valor < 0 ? 'valor-negativo' : 'valor-zero' %>">
+                                        <% if (valor !== 0) { %>
+                                            R$ <%= Math.abs(valor).toFixed(2).replace('.', ',') %>
+                                            <% if (valor < 0) { %><br><small class="text-muted">(débito)</small><% } %>
+                                        <% } else { %>
+                                            -
+                                        <% } %>
+                                    </span>
+                                </td>
+                                <% } %>
+                                <td>
+                                    <% const mediaConta = totaisPorConta[item.conta.ordemTabela]; %>
+                                    <% if (item.conta.tipoConta === 'SALDO') { %>
+                                        <span class="text-muted" style="font-style: italic;">
+                                            N/A
+                                        </span>
+                                    <% } else { %>
+                                        <strong class="<%= mediaConta > 0 ? 'valor-positivo' : mediaConta < 0 ? 'valor-negativo' : 'valor-zero' %>">
+                                            <% if (mediaConta !== 0) { %>
+                                                R$ <%= Math.abs(mediaConta).toFixed(2).replace('.', ',') %>
+                                                <% if (mediaConta < 0) { %><br><small class="text-muted">(débito)</small><% } %>
+                                                <br><small class="text-muted">média</small>
+                                            <% } else { %>
+                                                -
+                                            <% } %>
+                                        </strong>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td class="conta-cell">
+                                    <strong><i class="bi bi-calculator me-2"></i>TOTAL MENSAL</strong>
+                                </td>
+                                <% for (let mes = 0; mes < 12; mes++) { %>
+                                <td class="total-cell">
+                                    <% const totalMes = totaisPorMes[mes]; %>
+                                    <strong>
+                                        <% if (totalMes !== 0) { %>
+                                            R$ <%= Math.abs(totalMes).toFixed(2).replace('.', ',') %>
+                                            <% if (totalMes < 0) { %><br><small>(débito)</small><% } %>
+                                        <% } else { %>
+                                            -
+                                        <% } %>
+                                    </strong>
+                                </td>
+                                <% } %>
+                                <td>
+                                    <!-- Campo em branco - sem total anual -->
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer com Informações -->
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="card main-card">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="bi bi-info-circle me-2"></i>Legenda
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-arrow-up-circle text-success me-2"></i>
+                                    <span class="valor-positivo">Valores Positivos</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-arrow-down-circle text-danger me-2"></i>
+                                    <span class="valor-negativo">Valores Negativos</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-dash-circle text-muted me-2"></i>
+                                    <span class="valor-zero">Sem Movimentação</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-calculator text-primary me-2"></i>
+                                    <span class="text-primary">Média Mensal</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-x-circle text-muted me-2"></i>
+                                    <span class="text-muted">N/A (Contas de Saldo)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-lock-fill text-warning me-2"></i>
+                            <span class="text-warning"><strong>Saldo Anterior (Automática)</strong></span>
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-calendar-check me-1"></i>
+                            Dados consolidados para o ano de <strong><%= anoSelecionado %></strong>.
+                            Total de <%= Object.keys(dadosPorContaMes).length %> contas exibidas (todas as contas cadastradas).
+                            <br>
+                            <i class="bi bi-info-circle me-1"></i>
+                            A conta "Saldo Anterior" é calculada automaticamente com base no saldo do mês anterior.
+                            <br>
+                            <i class="bi bi-calculator me-1"></i>
+                            A coluna "Média Mensal" mostra a média dos meses com movimentação no ano selecionado (contas de saldo não possuem média).
+                            <br>
+                            <i class="bi bi-table me-1"></i>
+                            Contas sem movimentações no ano aparecem com valores zerados, mas podem receber novos valores a qualquer momento.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card main-card">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="bi bi-lightning me-2"></i>Ações Rápidas
+                        </h6>
+                        <div class="d-grid gap-2">
+                            <a href="/fluxo-caixa" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-graph-up me-2"></i>Ver Dashboard
+                            </a>
+                            <a href="/fluxo-caixa/relatorios" class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-graph-up-arrow me-2"></i>Relatórios Detalhados
+                            </a>
+                            <a href="/fluxo-caixa/contas" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-gear me-2"></i>Gerenciar Contas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Nova Conta -->
+    <div class="modal fade" id="novaContaModal" tabindex="-1" aria-labelledby="novaContaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-gradient text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <h5 class="modal-title" id="novaContaModalLabel">
+                        <i class="bi bi-plus-square me-2"></i>Nova Conta
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="/fluxo-caixa/fluxo/conta/add" class="needs-validation" novalidate>
+                    <input type="hidden" name="ano" value="<%= anoSelecionado %>">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nomeConta" class="form-label">
+                                <i class="bi bi-building me-2"></i>Nome da Conta
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="nomeConta"
+                                   name="nomeConta"
+                                   placeholder="Digite o nome da conta"
+                                   required>
+                            <div class="invalid-feedback">
+                                Por favor, informe o nome da conta.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tipoConta" class="form-label">
+                                <i class="bi bi-tags me-2"></i>Tipo da Conta
+                            </label>
+                            <select class="form-select" id="tipoConta" name="tipoConta" required>
+                                <option value="" disabled selected>Selecione o tipo</option>
+                                <% getTiposContaArray().forEach(function(tipo) { %>
+                                <option value="<%= tipo %>">
+                                    <i class="<%= getIconeTipoConta(tipo) %>"></i>
+                                    <%= getDescricaoTipoConta(tipo) %>
+                                </option>
+                                <% }); %>
+                            </select>
+                            <div class="invalid-feedback">
+                                Por favor, selecione o tipo da conta.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="categoriaId" class="form-label">
+                                <i class="bi bi-folder me-2"></i>Categoria
+                            </label>
+                            <select class="form-select" id="categoriaId" name="categoriaId" required>
+                                <option value="" disabled selected>Selecione a categoria</option>
+                                <% todasCategorias.forEach(function(categoria) { %>
+                                <option value="<%= categoria.id %>">
+                                    <%= categoria.categoria %>
+                                </option>
+                                <% }); %>
+                                <option value="nova" data-nova-categoria="true">
+                                    ➕ Criar Nova Categoria...
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Por favor, selecione a categoria.
+                            </div>
+                        </div>
+
+                        <!-- Campo para Nova Categoria (oculto inicialmente) -->
+                        <div class="mb-3" id="novaCategoriaDiv" style="display: none;">
+                            <label for="novaCategoriaNome" class="form-label">
+                                <i class="bi bi-plus-circle me-2"></i>Nome da Nova Categoria
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-folder-plus"></i>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="novaCategoriaNome"
+                                       name="novaCategoriaNome"
+                                       placeholder="Digite o nome da nova categoria"
+                                       maxlength="50">
+                                <button type="button" class="btn btn-outline-secondary" id="cancelarNovaCategoria">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback" id="novaCategoriaFeedback">
+                                Por favor, informe o nome da nova categoria.
+                            </div>
+                            <small class="text-muted">
+                                A nova categoria será criada junto com a conta. Máximo 50 caracteres.
+                            </small>
+                        </div>
+
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Dica:</strong> A nova conta aparecerá na tabela assim que for criada.
+                            Você poderá adicionar movimentações para ela posteriormente.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-2"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i>Criar Conta
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Nova Movimentação -->
+    <div class="modal fade" id="novaMovimentacaoModal" tabindex="-1" aria-labelledby="novaMovimentacaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-gradient text-white" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <h5 class="modal-title" id="novaMovimentacaoModalLabel">
+                        <i class="bi bi-plus-circle me-2"></i>Nova Movimentação
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="/fluxo-caixa/fluxo/movimentacao/add" class="needs-validation" novalidate>
+                    <input type="hidden" name="anoRedirect" value="<%= anoSelecionado %>">
+                    <input type="hidden" name="contaId" id="movContaId">
+                    <input type="hidden" name="mes" id="movMes">
+                    <input type="hidden" name="ano" id="movAno">
+
+                    <div class="modal-body">
+                        <!-- Conta (somente leitura) -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-building me-2"></i>Conta
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="movContaIcone">
+                                    <i class="bi bi-circle"></i>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="movContaNome"
+                                       readonly
+                                       style="background-color: #f8f9fa;">
+                                <span class="input-group-text">
+                                    <small class="badge bg-secondary" id="movContaCategoria"></small>
+                                </span>
+                            </div>
+                            <small class="text-muted">A conta foi selecionada automaticamente com base na célula clicada</small>
+                        </div>
+
+                        <!-- Data (Mês/Ano) -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-calendar3 me-2"></i>Período
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-calendar-month"></i>
+                                </span>
+                                <select class="form-select" id="movMesSelect" disabled style="background-color: #f8f9fa;">
+                                    <option value="0">Janeiro</option>
+                                    <option value="1">Fevereiro</option>
+                                    <option value="2">Março</option>
+                                    <option value="3">Abril</option>
+                                    <option value="4">Maio</option>
+                                    <option value="5">Junho</option>
+                                    <option value="6">Julho</option>
+                                    <option value="7">Agosto</option>
+                                    <option value="8">Setembro</option>
+                                    <option value="9">Outubro</option>
+                                    <option value="10">Novembro</option>
+                                    <option value="11">Dezembro</option>
+                                </select>
+                                <input type="number"
+                                       class="form-control"
+                                       id="movAnoInput"
+                                       readonly
+                                       style="background-color: #f8f9fa; max-width: 100px;">
+                            </div>
+                            <small class="text-muted">Mês e ano foram selecionados automaticamente com base na célula clicada</small>
+                        </div>
+
+                        <!-- Valor -->
+                        <div class="mb-3">
+                            <label for="movValor" class="form-label">
+                                <i class="bi bi-currency-dollar me-2"></i>Valor
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="movValor"
+                                       name="valor"
+                                       placeholder="0,00"
+                                       required
+                                       autocomplete="off">
+                                <span class="input-group-text" id="movValorTipo">
+                                    <small class="text-muted">Digite o valor</small>
+                                </span>
+                            </div>
+                            <div class="invalid-feedback">
+                                Por favor, informe um valor válido diferente de zero.
+                            </div>
+                            <small class="text-muted">
+                                Digite o valor no formato: 1234,56 ou 1.234,56
+                            </small>
+                        </div>
+
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Dica:</strong> Para contas do tipo <strong>DESPESA</strong>, digite valores positivos (ex: 100,00).
+                            Para <strong>RECEITA</strong> e <strong>SALDO</strong>, digite valores positivos também.
+                            O sistema aplicará automaticamente o sinal correto.
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-2"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-2"></i>Adicionar Movimentação
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Controle do seletor de ano
+        document.getElementById('yearSelector').addEventListener('change', function() {
+            const anoSelecionado = this.value;
+            window.location.href = `/fluxo-caixa/fluxo?ano=${anoSelecionado}`;
+        });
+
+        // Auto-fechar alertas após 5 segundos
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Hover effect nas linhas da tabela
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('.fluxo-table tbody tr');
+            rows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = 'rgba(102, 126, 234, 0.05)';
+                });
+                row.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '';
+                });
+            });
+
+            // Inicializar drag and drop para ordenação das contas
+            initSortableTable();
+        });
+
+        // Tooltip para valores truncados no mobile
+        if (window.innerWidth <= 768) {
+            const valores = document.querySelectorAll('.fluxo-table td span');
+            valores.forEach(valor => {
+                if (valor.textContent.trim() !== '-') {
+                    valor.title = valor.textContent;
+                }
+            });
+        }
+
+        // Controle da Modal de Nova Conta
+        const novaContaModal = document.getElementById('novaContaModal');
+        const novaContaForm = novaContaModal.querySelector('form');
+
+        // Limpar formulário quando modal for fechada
+        novaContaModal.addEventListener('hidden.bs.modal', function() {
+            novaContaForm.reset();
+            novaContaForm.classList.remove('was-validated');
+
+            // Limpar mensagens de validação customizadas
+            const inputs = novaContaForm.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.setCustomValidity('');
+            });
+
+            // Resetar estado da nova categoria
+            novaCategoriaDiv.style.display = 'none';
+            novaCategoriaNomeInput.required = false;
+            novaCategoriaNomeInput.value = '';
+            categoriaSelect.required = true;
+
+            // Resetar feedback do tipo de conta
+            tipoContaSelect.className = 'form-select';
+        });
+
+        // Array de contas existentes gerado pelo servidor
+        const dadosContasJS = <%- JSON.stringify(dadosPorContaMes) %>;
+        const nomesContasExistentes = Object.values(dadosContasJS).map(item =>
+            item.conta.nomeConta.toLowerCase()
+        );
+        const contasExistentesArray = JSON.stringify(nomesContasExistentes);
+
+        // Validação em tempo real do nome da conta
+        const nomeContaInput = document.getElementById('nomeConta');
+        nomeContaInput.addEventListener('blur', function() {
+            const nome = this.value.trim();
+            if (nome && contasExistentesArray.includes(nome.toLowerCase())) {
+                this.setCustomValidity('Já existe uma conta com este nome');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Limpar validação customizada quando o usuário digita
+        nomeContaInput.addEventListener('input', function() {
+            this.setCustomValidity('');
+        });
+
+        // Validação do formulário da modal
+        novaContaForm.addEventListener('submit', function(event) {
+            let isValid = true;
+
+            // Validação especial para nova categoria
+            if (categoriaSelect.value === 'nova') {
+                const nomeNovaCategoria = novaCategoriaNomeInput.value.trim();
+
+                if (!nomeNovaCategoria) {
+                    novaCategoriaNomeInput.setCustomValidity('Nome da categoria é obrigatório');
+                    isValid = false;
+                } else if (nomeNovaCategoria.length < 2) {
+                    novaCategoriaNomeInput.setCustomValidity('O nome deve ter pelo menos 2 caracteres');
+                    isValid = false;
+                } else {
+                    // Verificar se não existe categoria com mesmo nome
+                    const categoriasExistentes = [
+                        <% todasCategorias.forEach(function(categoria, index) { %>
+                        '<%= categoria.categoria.toLowerCase() %>'<%= index < todasCategorias.length - 1 ? ',' : '' %>
+                        <% }); %>
+                    ];
+
+                    if (categoriasExistentes.includes(nomeNovaCategoria.toLowerCase())) {
+                        novaCategoriaNomeInput.setCustomValidity('Já existe uma categoria com este nome');
+                        isValid = false;
+                    } else {
+                        novaCategoriaNomeInput.setCustomValidity('');
+                    }
+                }
+            }
+
+            // Validação padrão do formulário
+            if (!this.checkValidity() || !isValid) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            this.classList.add('was-validated');
+        });
+
+        // Feedback visual na seleção do tipo de conta
+        const tipoContaSelect = document.getElementById('tipoConta');
+        const tiposCores = {
+            'RECEITA': 'success',
+            'DESPESA': 'danger',
+            'SALDO': 'primary'
+        };
+
+        tipoContaSelect.addEventListener('change', function() {
+            const selectedValue = this.value;
+            if (selectedValue && tiposCores[selectedValue]) {
+                this.className = `form-select text-${tiposCores[selectedValue]}`;
+            } else {
+                this.className = 'form-select';
+            }
+        });
+
+        // === CONTROLE DA NOVA CATEGORIA ===
+        const categoriaSelect = document.getElementById('categoriaId');
+        const novaCategoriaDiv = document.getElementById('novaCategoriaDiv');
+        const novaCategoriaNomeInput = document.getElementById('novaCategoriaNome');
+        const cancelarNovaCategoriaBtn = document.getElementById('cancelarNovaCategoria');
+
+        // Controlar exibição do campo de nova categoria
+        categoriaSelect.addEventListener('change', function() {
+            const isNovaCategoria = this.value === 'nova';
+
+            if (isNovaCategoria) {
+                // Mostrar campo de nova categoria
+                novaCategoriaDiv.style.display = 'block';
+                novaCategoriaNomeInput.required = true;
+
+                // Remover required do select de categoria
+                categoriaSelect.required = false;
+
+                // Focar no campo de nome
+                setTimeout(() => novaCategoriaNomeInput.focus(), 100);
+            } else {
+                // Ocultar campo de nova categoria
+                novaCategoriaDiv.style.display = 'none';
+                novaCategoriaNomeInput.required = false;
+                novaCategoriaNomeInput.value = '';
+
+                // Restaurar required do select
+                categoriaSelect.required = true;
+
+                // Limpar validações
+                novaCategoriaNomeInput.setCustomValidity('');
+                novaCategoriaDiv.querySelector('.invalid-feedback').style.display = 'none';
+            }
+        });
+
+        // Botão cancelar nova categoria
+        cancelarNovaCategoriaBtn.addEventListener('click', function() {
+            // Voltar para seleção normal
+            categoriaSelect.value = '';
+            categoriaSelect.dispatchEvent(new Event('change'));
+        });
+
+        // Validação do nome da nova categoria
+        novaCategoriaNomeInput.addEventListener('blur', function() {
+            const nome = this.value.trim();
+            const categoriasExistentes = [
+                <% todasCategorias.forEach(function(categoria, index) { %>
+                '<%= categoria.categoria.toLowerCase() %>'<%= index < todasCategorias.length - 1 ? ',' : '' %>
+                <% }); %>
+            ];
+
+            if (nome && categoriasExistentes.includes(nome.toLowerCase())) {
+                this.setCustomValidity('Já existe uma categoria com este nome');
+                document.getElementById('novaCategoriaFeedback').textContent = 'Já existe uma categoria com este nome';
+            } else if (nome && nome.length < 2) {
+                this.setCustomValidity('O nome deve ter pelo menos 2 caracteres');
+                document.getElementById('novaCategoriaFeedback').textContent = 'O nome deve ter pelo menos 2 caracteres';
+            } else {
+                this.setCustomValidity('');
+                document.getElementById('novaCategoriaFeedback').textContent = 'Por favor, informe o nome da nova categoria.';
+            }
+        });
+
+        // Limpar validação quando usuário digita
+        novaCategoriaNomeInput.addEventListener('input', function() {
+            this.setCustomValidity('');
+        });
+
+        // Auto-foco no primeiro campo quando modal abrir
+        novaContaModal.addEventListener('shown.bs.modal', function() {
+            nomeContaInput.focus();
+        });
+
+        // === MODAL DE NOVA MOVIMENTAÇÃO ===
+
+        const novaMovimentacaoModal = document.getElementById('novaMovimentacaoModal');
+        const novaMovimentacaoForm = novaMovimentacaoModal.querySelector('form');
+        const movValorInput = document.getElementById('movValor');
+
+        // Formatação de valor em tempo real
+        function formatarValorBrasileiro(valor) {
+            // Remove tudo exceto números e vírgula
+            valor = valor.replace(/[^\d,]/g, '');
+
+            // Se tem vírgula, separa parte inteira da decimal
+            let partes = valor.split(',');
+            let parteInteira = partes[0];
+            let parteDecimal = partes[1];
+
+            // Formata a parte inteira com pontos
+            parteInteira = parteInteira.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+            // Limita parte decimal a 2 dígitos
+            if (parteDecimal !== undefined) {
+                parteDecimal = parteDecimal.substring(0, 2);
+                return parteInteira + ',' + parteDecimal;
+            }
+
+            return parteInteira;
+        }
+
+        function converterParaNumero(valorFormatado) {
+            // Remove pontos e troca vírgula por ponto
+            return parseFloat(valorFormatado.replace(/\./g, '').replace(',', '.')) || 0;
+        }
+
+        // Event listener para formatação do campo valor
+        movValorInput.addEventListener('input', function(e) {
+            let valor = e.target.value;
+            let valorFormatado = formatarValorBrasileiro(valor);
+            e.target.value = valorFormatado;
+
+            // Atualiza o indicador do tipo
+            const valorNumerico = converterParaNumero(valorFormatado);
+            const tipoIndicador = document.getElementById('movValorTipo');
+
+            if (valorNumerico > 0) {
+                tipoIndicador.innerHTML = '<small class="text-success">✓ Valor válido</small>';
+            } else {
+                tipoIndicador.innerHTML = '<small class="text-muted">Digite o valor</small>';
+            }
+        });
+
+        // Validação customizada do valor
+        movValorInput.addEventListener('blur', function(e) {
+            const valorNumerico = converterParaNumero(e.target.value);
+            if (valorNumerico <= 0) {
+                e.target.setCustomValidity('Valor deve ser maior que zero');
+            } else {
+                e.target.setCustomValidity('');
+            }
+        });
+
+        // Limpar validação quando usuário digita
+        movValorInput.addEventListener('input', function(e) {
+            e.target.setCustomValidity('');
+        });
+
+        // Click nas células da tabela
+        document.addEventListener('click', function(e) {
+            const celula = e.target.closest('.celula-clicavel');
+            if (celula && !e.target.closest('.conta-especial')) {
+                // Extrair dados da célula
+                const contaId = celula.dataset.contaId;
+                const contaNome = celula.dataset.contaNome;
+                const contaTipo = celula.dataset.contaTipo;
+                const contaCategoria = celula.dataset.contaCategoria;
+                const mes = parseInt(celula.dataset.mes);
+                const ano = parseInt(celula.dataset.ano);
+
+                // Preencher campos hidden
+                document.getElementById('movContaId').value = contaId;
+                document.getElementById('movMes').value = mes;
+                document.getElementById('movAno').value = ano;
+
+                // Preencher campos visuais
+                document.getElementById('movContaNome').value = contaNome;
+                document.getElementById('movContaCategoria').textContent = contaCategoria;
+                document.getElementById('movMesSelect').value = mes;
+                document.getElementById('movAnoInput').value = ano;
+
+                // Atualizar ícone da conta baseado no tipo
+                const iconesConta = {
+                    'RECEITA': 'bi-arrow-up-circle text-success',
+                    'DESPESA': 'bi-arrow-down-circle text-danger',
+                    'SALDO': 'bi-cash-stack text-primary'
+                };
+
+                const contaIconeElement = document.getElementById('movContaIcone');
+                contaIconeElement.innerHTML = `<i class="${iconesConta[contaTipo] || 'bi-circle'}"></i>`;
+
+                // Atualizar título da modal
+                const nomesMeses = [
+                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                ];
+
+                document.getElementById('novaMovimentacaoModalLabel').innerHTML =
+                    `<i class="bi bi-plus-circle me-2"></i>Nova Movimentação - ${nomesMeses[mes]}/${ano}`;
+
+                // Limpar o campo valor
+                movValorInput.value = '';
+                document.getElementById('movValorTipo').innerHTML = '<small class="text-muted">Digite o valor</small>';
+
+                // Abrir modal
+                const modal = new bootstrap.Modal(novaMovimentacaoModal);
+                modal.show();
+            }
+        });
+
+        // Limpar formulário quando modal de movimentação for fechada
+        novaMovimentacaoModal.addEventListener('hidden.bs.modal', function() {
+            novaMovimentacaoForm.reset();
+            novaMovimentacaoForm.classList.remove('was-validated');
+
+            // Limpar validações customizadas
+            const inputs = novaMovimentacaoForm.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.setCustomValidity('');
+            });
+
+            // Reset do indicador de valor
+            document.getElementById('movValorTipo').innerHTML = '<small class="text-muted">Digite o valor</small>';
+        });
+
+        // Auto-foco no campo valor quando modal de movimentação abrir
+        novaMovimentacaoModal.addEventListener('shown.bs.modal', function() {
+            movValorInput.focus();
+        });
+
+        // Validação do formulário de movimentação
+        novaMovimentacaoForm.addEventListener('submit', function(event) {
+            // Converter valor formatado para número antes do envio
+            const valorFormatado = movValorInput.value;
+            const valorNumerico = converterParaNumero(valorFormatado);
+
+            // Criar um input hidden com o valor numérico
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'valor';
+            hiddenInput.value = valorNumerico.toString();
+
+            // Remover name do campo visível para não conflitar
+            movValorInput.removeAttribute('name');
+
+            // Adicionar o hidden input ao form
+            this.appendChild(hiddenInput);
+
+            if (!this.checkValidity() || valorNumerico <= 0) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (valorNumerico <= 0) {
+                    movValorInput.setCustomValidity('Valor deve ser maior que zero');
+                }
+            }
+            this.classList.add('was-validated');
+        });
+
+        // Função para inicializar o drag and drop
+        function initSortableTable() {
+            const tbody = document.getElementById('contas-tbody');
+            if (!tbody) return;
+
+            const sortable = new Sortable(tbody, {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'sortable-drag',
+                handle: '.drag-handle',
+                filter: '.conta-especial', // Impedir drag da conta especial
+                preventOnFilter: false, // Não impedir cliques em elementos filtrados
+
+                // Função chamada quando o drag inicia
+                onStart: function(evt) {
+                    document.body.style.userSelect = 'none';
+                },
+
+                // Função chamada quando o drag termina
+                onEnd: function(evt) {
+                    document.body.style.userSelect = '';
+
+                    // Se a posição mudou, salvar nova ordem
+                    if (evt.oldIndex !== evt.newIndex) {
+                        salvarNovaOrdemContas();
+                    }
+                },
+
+                // Função para determinar se um item pode ser movido
+                onMove: function(evt) {
+                    // Não permitir mover a conta especial (Saldo Anterior)
+                    const draggedElement = evt.dragged;
+                    const relatedElement = evt.related;
+
+                    // Impedir que a conta especial seja movida
+                    if (draggedElement.classList.contains('conta-especial')) {
+                        return false;
+                    }
+
+                    // Impedir que outros itens sejam colocados antes da conta especial
+                    if (relatedElement.classList.contains('conta-especial') && evt.willInsertAfter === false) {
+                        return false;
+                    }
+
+                    return true;
+                }
+            });
+        }
+
+        // Função para salvar nova ordem das contas
+        function salvarNovaOrdemContas() {
+            const tbody = document.getElementById('contas-tbody');
+            const rows = tbody.querySelectorAll('tr[data-conta-id]');
+            const novaOrdem = [];
+
+            rows.forEach(row => {
+                const contaId = row.getAttribute('data-conta-id');
+                if (contaId) {
+                    novaOrdem.push(parseInt(contaId));
+                }
+            });
+
+            // Enviar nova ordem para o servidor
+            fetch('/fluxo-caixa/fluxo/contas/ordem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ novaOrdem: novaOrdem })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Mostrar feedback visual de sucesso
+                    mostrarFeedbackOrdem('success', 'Ordem das contas atualizada!');
+                } else {
+                    console.error('Erro ao salvar ordem:', data.message);
+                    mostrarFeedbackOrdem('error', 'Erro ao salvar ordem das contas');
+                    // Recarregar página em caso de erro para restaurar ordem original
+                    setTimeout(() => location.reload(), 2000);
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição:', error);
+                mostrarFeedbackOrdem('error', 'Erro de conexão');
+                setTimeout(() => location.reload(), 2000);
+            });
+        }
+
+        // Função para mostrar feedback visual
+        function mostrarFeedbackOrdem(tipo, mensagem) {
+            // Remover toasts anteriores
+            const existingToasts = document.querySelectorAll('.ordem-toast');
+            existingToasts.forEach(toast => toast.remove());
+
+            // Criar novo toast
+            const toastClass = tipo === 'success' ? 'bg-success' : 'bg-danger';
+            const iconClass = tipo === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle';
+
+            const toastHtml = `
+                <div class="toast ordem-toast ${toastClass} text-white position-fixed bottom-0 end-0 m-3"
+                     role="alert" style="z-index: 1055;">
+                    <div class="d-flex align-items-center p-3">
+                        <i class="bi ${iconClass} me-2"></i>
+                        <div class="me-auto">${mensagem}</div>
+                        <button type="button" class="btn-close btn-close-white ms-2"
+                                data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', toastHtml);
+
+            // Mostrar toast
+            const toastElement = document.querySelector('.ordem-toast');
+            const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+            toast.show();
+
+            // Remover após exibição
+            toastElement.addEventListener('hidden.bs.toast', () => {
+                toastElement.remove();
+            });
+        }
+    </script>
+</body>
+</html>

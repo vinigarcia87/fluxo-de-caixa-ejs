@@ -1,0 +1,23 @@
+{
+  "watch": [
+    "app.js",
+    "routes/",
+    "views/",
+    "public/",
+    "bin/"
+  ],
+  "ext": "js,ejs,css,json",
+  "ignore": [
+    "node_modules/",
+    "*.md",
+    "*.log",
+    ".git/",
+    "*.tmp"
+  ],
+  "delay": 1000,
+  "env": {
+    "NODE_ENV": "development",
+    "DEBUG": "fluxo-de-caixa:*"
+  },
+  "verbose": true
+}
