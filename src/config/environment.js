@@ -3,7 +3,8 @@
  */
 
 // Carregar variáveis de ambiente
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 /**
  * Validar variáveis de ambiente obrigatórias
@@ -180,10 +181,14 @@ const displayConfig = () => {
 // Validar configuração na inicialização
 validateConfig();
 
-module.exports = {
+const environmentModule = {
   ...config,
   get,
   isEnvironment,
   validateConfig,
   displayConfig
 };
+
+// Exportações ES modules
+export default config;
+export { config, get, isEnvironment, validateConfig, displayConfig };

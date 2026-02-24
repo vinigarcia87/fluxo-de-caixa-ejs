@@ -1,7 +1,7 @@
-const { body } = require('express-validator');
-const { getCategoriaById } = require('../models/CategoriaConta');
-const { getTiposContaArray } = require('../models/TipoConta');
-const { contaExists } = require('../models/Conta');
+import { body } from 'express-validator';
+import { getCategoriaById } from '../models/CategoriaConta.js';
+import { getTiposContaArray } from '../models/TipoConta.js';
+import { contaExists } from '../models/Conta.js';
 
 /**
  * Validações para criação de conta
@@ -177,7 +177,8 @@ const atualizarOrdemContasValidation = [
     .withMessage('Cada item da ordem deve ser um ID válido')
 ];
 
-module.exports = {
+// Exportações ES modules
+export {
   criarContaValidation,
   atualizarContaValidation,
   criarContaFluxoValidation,

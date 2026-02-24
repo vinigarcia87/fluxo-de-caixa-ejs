@@ -1,25 +1,26 @@
-const express = require('express');
+import express from 'express';
+
 const router = express.Router();
 
 // Controllers
-const FluxoCaixaController = require('../controllers/FluxoCaixaController');
+import FluxoCaixaController from '../controllers/FluxoCaixaController.js';
 
 // Validations
-const {
+import {
   criarMovimentacaoValidation,
   atualizarMovimentacaoValidation,
   criarMovimentacaoFluxoValidation,
   sanitizeMovimentacao
-} = require('../validations/movimentacaoValidation');
+} from '../validations/movimentacaoValidation.js';
 
-const {
+import {
   criarContaFluxoValidation,
   atualizarOrdemContasValidation
-} = require('../validations/contaValidation');
+} from '../validations/contaValidation.js';
 
 // Middleware
-const { formLimiter } = require('../middleware/security');
-const { catchAsync } = require('../utils/errorHandler');
+import { formLimiter } from '../middleware/security.js';
+import { catchAsync } from '../utils/errorHandler.js';
 
 // ============================================================================
 // DASHBOARD
@@ -106,14 +107,14 @@ router.post('/fluxo/conta/add',
   catchAsync(async (req, res, next) => {
     try {
       // Importar lógica do arquivo original mantendo compatibilidade
-      const { validationResult } = require('express-validator');
-      const ContaService = require('../services/ContaService');
+      const { validationResult } = await import('express-validator');
+      const ContaService = (await import('../services/ContaService.js')).default;
       const {
         CategoriaConta,
         addCategoria,
         categoriaExists
-      } = require('../models/CategoriaConta');
-      const { Conta, addConta, contaExists } = require('../models/Conta');
+      } = await import('../models/CategoriaConta.js');
+      const { Conta, addConta, contaExists } = await import('../models/Conta.js');
 
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -172,10 +173,9 @@ router.post('/fluxo/movimentacao/add',
   catchAsync(async (req, res, next) => {
     try {
       // Importar lógica do arquivo original mantendo compatibilidade
-      const { validationResult } = require('express-validator');
-      const { ContaValor, addContaValor } = require('../models/ContaValor');
-      const { getContaById, isContaSaldoAnterior } = require('../models/Conta');
-      const { recalcularSaldosAno } = require('../models/ContaValor');
+      const { validationResult } = await import('express-validator');
+      const { ContaValor, addContaValor, recalcularSaldosAno } = await import('../models/ContaValor.js');
+      const { getContaById, isContaSaldoAnterior } = await import('../models/Conta.js');
 
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -222,7 +222,7 @@ router.post('/fluxo/contas/ordem',
   atualizarOrdemContasValidation,
   catchAsync(async (req, res, next) => {
     try {
-      const { atualizarOrdemContas } = require('../models/Conta');
+      const { atualizarOrdemContas } = await import('../models/Conta.js');
       const { novaOrdem } = req.body;
 
       const sucesso = atualizarOrdemContas(novaOrdem);
@@ -265,7 +265,7 @@ router.get('/relatorios', catchAsync(FluxoCaixaController.getRelatorios));
  */
 router.get('/debug/contas/ordem', catchAsync(async (req, res) => {
   try {
-    const ContaService = require('../services/ContaService');
+    const ContaService = (await import('../services/ContaService.js')).default;
     const contasOrdenadas = await ContaService.getContasOrdenadas();
 
     const debug = contasOrdenadas.map(conta => ({
@@ -289,4 +289,4 @@ router.get('/debug/contas/ordem', catchAsync(async (req, res) => {
   }
 }));
 
-module.exports = router;
+export default router;

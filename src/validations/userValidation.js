@@ -2,8 +2,8 @@
  * Validações para operações de usuários
  */
 
-const { body } = require('express-validator');
-const { emailExists, cpfExists } = require('../models/User');
+import { body, validationResult } from 'express-validator';
+import { emailExists, cpfExists } from '../models/User.js';
 
 /**
  * Validar CPF
@@ -277,7 +277,6 @@ const validateRouteParams = (req, res, next) => {
  * Middleware para logar erros de validação do express-validator
  */
 const logValidationErrors = (req, res, next) => {
-  const { validationResult } = require('express-validator');
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -310,7 +309,8 @@ const logValidationErrors = (req, res, next) => {
   next();
 };
 
-module.exports = {
+// Exportações ES modules
+export {
   createUserValidation,
   updateUserValidation,
   searchUserValidation,

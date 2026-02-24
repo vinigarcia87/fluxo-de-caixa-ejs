@@ -1,4 +1,4 @@
-const {
+import {
   Conta,
   getAllContas,
   getContaById,
@@ -15,9 +15,9 @@ const {
   definirOrdemPorCategoria,
   isContaSaldoAnterior,
   CONTA_SALDO_ANTERIOR_ID
-} = require('../models/Conta');
+} from '../models/Conta.js';
 
-const {
+import {
   CategoriaConta,
   getAllCategorias,
   getCategoriaById,
@@ -25,20 +25,20 @@ const {
   updateCategoria,
   deleteCategoria,
   categoriaExists
-} = require('../models/CategoriaConta');
+} from '../models/CategoriaConta.js';
 
-const {
+import {
   TipoConta,
   getTiposContaArray,
   getDescricaoTipoConta,
   getCorTipoConta,
   getIconeTipoConta
-} = require('../models/TipoConta');
+} from '../models/TipoConta.js';
 
-const { getContaValoresByConta } = require('../models/ContaValor');
+import { getContaValoresByConta } from '../models/ContaValor.js';
 
-const { AppError } = require('../utils/errorHandler');
-const logger = require('../utils/logger');
+import { AppError } from '../utils/errorHandler.js';
+import { logger } from '../utils/logger.js';
 
 class ContaService {
   /**
@@ -359,4 +359,6 @@ class ContaService {
   }
 }
 
-module.exports = new ContaService();
+// Exportação ES modules
+const contaService = new ContaService();
+export default contaService;

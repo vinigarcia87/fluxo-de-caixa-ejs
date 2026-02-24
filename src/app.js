@@ -1,15 +1,14 @@
 // ES modules utilities
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import path, { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Configurar variáveis de ambiente ANTES de tudo
-import config from './config/environment.js';
+import config, { displayConfig } from './config/environment.js';
 
 // Imports principais
 import express from 'express';
-import path from 'path';
 import cookieParser from 'cookie-parser';
 
 // Middleware de segurança e logging
@@ -182,7 +181,7 @@ if (config.isDevelopment) {
   logger.info(`🌐 Servidor rodando na porta: ${config.PORT}`);
 
   // Exibir configuração em desenvolvimento
-  config.displayConfig();
+  displayConfig();
 }
 
 export default app;

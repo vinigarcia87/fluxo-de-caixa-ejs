@@ -1,4 +1,4 @@
-const {
+import {
   ContaValor,
   getAllContaValores,
   getContaValorById,
@@ -10,11 +10,14 @@ const {
   getResumoFinanceiro,
   calcularESalvarSaldosAnteriores,
   recalcularSaldosAno
-} = require('../models/ContaValor');
+} from '../models/ContaValor.js';
 
-const ContaService = require('./ContaService');
-const { AppError } = require('../utils/errorHandler');
-const logger = require('../utils/logger');
+import ContaService from './ContaService.js';
+import { AppError } from '../utils/errorHandler.js';
+import { logger } from '../utils/logger.js';
+
+// Importar funções helper
+import { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } from '../models/TipoConta.js';
 
 class FluxoCaixaService {
   /**
@@ -246,9 +249,6 @@ class FluxoCaixaService {
       const totaisPorConta = this._calcularTotaisPorConta(dadosPorContaMes, anoSelecionado);
       const totalGeral = Object.values(totaisPorMes).reduce((acc, val) => acc + val, 0);
 
-      // Importar funções helper do TipoConta
-      const { TipoConta, getTiposContaArray, getDescricaoTipoConta, getCorTipoConta, getIconeTipoConta } = require('../models/TipoConta');
-
       return {
         anoSelecionado,
         anosDisponiveis,
@@ -467,4 +467,6 @@ class FluxoCaixaService {
   }
 }
 
-module.exports = new FluxoCaixaService();
+// Exportação ES modules
+const fluxoCaixaService = new FluxoCaixaService();
+export default fluxoCaixaService;

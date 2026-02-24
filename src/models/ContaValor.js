@@ -1,4 +1,4 @@
-const { Conta, getContaById, getContaSaldoAnterior, CONTA_SALDO_ANTERIOR_ID } = require('./Conta');
+import { Conta, getContaById, getContaSaldoAnterior, CONTA_SALDO_ANTERIOR_ID } from './Conta.js';
 
 // Classe ContaValor
 class ContaValor {
@@ -300,7 +300,8 @@ function recalcularSaldosAno(ano) {
   }
 }
 
-module.exports = {
+// Exportações ES modules
+export {
   ContaValor,
   getAllContaValores,
   getContaValorById,
@@ -317,3 +318,5 @@ module.exports = {
   calcularESalvarSaldosAnteriores,
   recalcularSaldosAno
 };
+
+export default ContaValor;

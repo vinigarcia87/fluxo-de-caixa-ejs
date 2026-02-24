@@ -3,9 +3,9 @@
  * Gerencia todas as operações relacionadas aos usuários do sistema
  */
 
-const UserService = require('../services/UserService');
-const { validationResult } = require('express-validator');
-const { AppError } = require('../utils/errorHandler');
+import UserService from '../services/UserService.js';
+import { validationResult } from 'express-validator';
+import { AppError } from '../utils/errorHandler.js';
 
 // Logger melhorado para operações de usuário
 const logger = {
@@ -362,4 +362,6 @@ class UserController {
   }
 }
 
-module.exports = new UserController();
+// Exportação ES modules
+const userController = new UserController();
+export default userController;

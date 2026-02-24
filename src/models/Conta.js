@@ -1,5 +1,5 @@
-const { TipoConta, isValidTipoConta } = require('./TipoConta');
-const { CategoriaConta, getCategoriaById } = require('./CategoriaConta');
+import { TipoConta, isValidTipoConta } from './TipoConta.js';
+import { CategoriaConta, getCategoriaById } from './CategoriaConta.js';
 
 // Classe Conta
 class Conta {
@@ -259,7 +259,8 @@ function reorganizarContasPorCategoria() {
   return true;
 }
 
-module.exports = {
+// Exportações ES modules
+export {
   Conta,
   getAllContas,
   getContaById,
@@ -280,3 +281,5 @@ module.exports = {
   definirOrdemPorCategoria,
   CONTA_SALDO_ANTERIOR_ID
 };
+
+export default Conta;

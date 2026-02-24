@@ -3,7 +3,7 @@
  * Lógica de negócio para operações de usuários
  */
 
-const {
+import {
   User,
   getAllUsers,
   getUserById,
@@ -13,10 +13,10 @@ const {
   updateUser,
   deleteUser,
   getUserStats
-} = require('../models/User');
+} from '../models/User.js';
 
-const { AppError } = require('../utils/errorHandler');
-const path = require('path');
+import { AppError } from '../utils/errorHandler.js';
+import path from 'path';
 
 // Logger melhorado para operações de serviço
 const logger = {
@@ -28,8 +28,8 @@ const logger = {
     console.log(`[SERVICE] ${new Date().toISOString()} 📤 File processed`, { filename, size, mimetype, userId });
   }
 };
-const fs = require('fs');
-const sharp = require('sharp');
+import fs from 'fs';
+import sharp from 'sharp';
 
 class UserService {
   /**
@@ -324,4 +324,6 @@ class UserService {
   }
 }
 
-module.exports = new UserService();
+// Exportação ES modules
+const userService = new UserService();
+export default userService;

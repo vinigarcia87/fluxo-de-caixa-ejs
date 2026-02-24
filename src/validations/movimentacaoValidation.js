@@ -1,5 +1,5 @@
-const { body } = require('express-validator');
-const { getContaById } = require('../models/Conta');
+import { body } from 'express-validator';
+import { getContaById } from '../models/Conta.js';
 
 /**
  * Validações para criação de movimentação
@@ -139,7 +139,8 @@ const sanitizeMovimentacao = [
   body('observacoes').optional().trim().escape()
 ];
 
-module.exports = {
+// Exportações ES modules
+export {
   criarMovimentacaoValidation,
   atualizarMovimentacaoValidation,
   criarMovimentacaoFluxoValidation,

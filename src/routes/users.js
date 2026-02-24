@@ -8,11 +8,9 @@ import multer from 'multer';
 
 const router = express.Router();
 
-// Controller e Validações (usando createRequire para CommonJS modules)
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const UserController = require('../controllers/UserController');
-const {
+// Controller e Validações
+import UserController from '../controllers/UserController.js';
+import {
   createUserValidation,
   updateUserValidation,
   searchUserValidation,
@@ -20,7 +18,7 @@ const {
   validateRouteParams,
   sanitizeUserData,
   logValidationErrors
-} = require('../validations/userValidation');
+} from '../validations/userValidation.js';
 
 // Configuração do Multer para upload de imagens
 const storage = multer.memoryStorage(); // Armazena em memória para processamento

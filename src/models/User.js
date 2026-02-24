@@ -265,7 +265,8 @@ function getUserStats() {
   };
 }
 
-module.exports = {
+// Exportações ES modules
+export {
   User,
   getAllUsers,
   getUserById,
@@ -276,3 +277,5 @@ module.exports = {
   deleteUser,
   getUserStats
 };
+
+export default User;

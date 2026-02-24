@@ -92,7 +92,8 @@ function categoriaExists(categoria, excludeId = null) {
   );
 }
 
-module.exports = {
+// Exportações ES modules
+export {
   CategoriaConta,
   getAllCategorias,
   getCategoriaById,
@@ -101,3 +102,5 @@ module.exports = {
   deleteCategoria,
   categoriaExists
 };
+
+export default CategoriaConta;
