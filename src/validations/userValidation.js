@@ -9,6 +9,11 @@ const { emailExists, cpfExists } = require('../models/User');
  * Validar CPF
  */
 function isValidCPF(cpf) {
+  // Verificar se CPF existe e é uma string
+  if (!cpf || typeof cpf !== 'string') {
+    return false;
+  }
+
   // Remove caracteres não numéricos
   cpf = cpf.replace(/[^\d]/g, '');
 
@@ -76,11 +81,14 @@ const createUserValidation = [
     .notEmpty()
     .withMessage('CPF é obrigatório')
     .custom((cpf) => {
-      if (!isValidCPF(cpf)) {
-        throw new Error('CPF inválido');
-      }
-      if (cpfExists(cpf)) {
-        throw new Error('CPF já cadastrado');
+      // Só validar se o CPF existir e não for vazio
+      if (cpf && cpf.trim() !== '') {
+        if (!isValidCPF(cpf)) {
+          throw new Error('CPF inválido');
+        }
+        if (cpfExists(cpf)) {
+          throw new Error('CPF já cadastrado');
+        }
       }
       return true;
     })
@@ -123,12 +131,15 @@ const updateUserValidation = [
     .notEmpty()
     .withMessage('CPF é obrigatório')
     .custom((cpf, { req }) => {
-      if (!isValidCPF(cpf)) {
-        throw new Error('CPF inválido');
-      }
-      const userId = parseInt(req.params.id);
-      if (cpfExists(cpf, userId)) {
-        throw new Error('CPF já cadastrado');
+      // Só validar se o CPF existir e não for vazio
+      if (cpf && cpf.trim() !== '') {
+        if (!isValidCPF(cpf)) {
+          throw new Error('CPF inválido');
+        }
+        const userId = parseInt(req.params.id);
+        if (cpfExists(cpf, userId)) {
+          throw new Error('CPF já cadastrado');
+        }
       }
       return true;
     })

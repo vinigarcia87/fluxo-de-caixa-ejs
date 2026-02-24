@@ -39,6 +39,20 @@ const upload = multer({
   }
 });
 
+// Middleware Multer que funciona com ou sem arquivo
+const optionalUpload = (req, res, next) => {
+  upload.single('foto')(req, res, (err) => {
+    // Ignorar erros de Multer quando não há arquivo
+    if (err && !req.file) {
+      console.log('[MULTER] Processando sem arquivo, ignorando erro:', err.message);
+    } else if (err) {
+      // Apenas reportar erros reais de arquivo
+      return next(err);
+    }
+    next();
+  });
+};
+
 // ============================================================================
 // MIDDLEWARE ESPECÍFICO PARA VALIDAÇÃO DE PARÂMETROS (aplicado individualmente)
 // ============================================================================
@@ -66,7 +80,7 @@ router.get('/add', UserController.getCreateUserForm);
  * POST /users/add - Criar novo usuário (deve vir antes de /:id)
  */
 router.post('/add',
-  upload.single('foto'),
+  optionalUpload,
   photoValidation,
   createUserValidation,
   sanitizeUserData,
@@ -112,7 +126,7 @@ router.get('/:id/edit', validateRouteParams, UserController.getEditUserForm);
  */
 router.post('/:id/edit',
   validateRouteParams,
-  upload.single('foto'),
+  optionalUpload,
   photoValidation,
   updateUserValidation,
   sanitizeUserData,

@@ -35,8 +35,16 @@ const helmetConfig = helmet({
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
       frameSrc: ["'none'"],
+      // Explicitamente NÃO forçar upgrade para HTTPS em desenvolvimento
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null
     },
   },
+  // Desabilitar HSTS em desenvolvimento
+  hsts: process.env.NODE_ENV === 'production' ? {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  } : false,
   crossOriginEmbedderPolicy: false // Desabilitar para compatibilidade com alguns CDNs
 });
 
